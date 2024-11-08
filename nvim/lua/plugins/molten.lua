@@ -27,5 +27,16 @@ return {
     "vhyrro/luarocks.nvim",
     priority = 1000,
     config = true
+  },
+  {
+    "quarto-dev/quarto-nvim",
+    dependencies = {
+      "jmbuhr/otter.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
+  },
+  {
+  "GCBallesteros/jupytext.nvim",
+  config = true,
   }
 }

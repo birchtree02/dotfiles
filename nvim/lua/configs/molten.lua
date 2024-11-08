@@ -25,3 +25,50 @@ vim.keymap.set("n", "<localleader>oh", ":MoltenHideOutput<CR>",
     { silent = true, desc = "hide output" })
 vim.keymap.set("n", "<localleader>os", ":noautocmd MoltenEnterOutput<CR>",
     { silent = true, desc = "show/enter output" })
+
+vim.g.molten_auto_open_output = false
+vim.g.molten_virt_text_output = true
+vim.g.molten_virt_lines_off_by_1 = true
+
+
+local quarto = require("quarto")
+quarto.setup({
+    lspFeatures = {
+        languages = { "python" },
+        chunks = "all",
+        diagnostics = {
+            enabled = true,
+            triggers = { "BufWritePost" },
+        },
+        completion = {
+            enabled = true,
+        },
+    },
+    keymap = {
+        hover = "H",
+        definition = "gd",
+        rename = "<leader>rn",
+        references = "gr",
+        format = "<leader>gf",
+    },
+    codeRunner = {
+        enabled = true,
+        default_method = "molten",
+    },
+})
+
+local runner = require("quarto.runner")
+vim.keymap.set("n", "<localleader>rc", runner.run_cell,  { desc = "run cell", silent = true })
+vim.keymap.set("n", "<localleader>ra", runner.run_above, { desc = "run cell and above", silent = true })
+vim.keymap.set("n", "<localleader>rA", runner.run_all,   { desc = "run all cells", silent = true })
+vim.keymap.set("n", "<localleader>rl", runner.run_line,  { desc = "run line", silent = true })
+vim.keymap.set("v", "<localleader>r",  runner.run_range, { desc = "run visual range", silent = true })
+vim.keymap.set("n", "<localleader>RA", function()
+  runner.run_all(true)
+end, { desc = "run all cells of all languages", silent = true })
+
+require("jupytext").setup({
+    style = "markdown",
+    output_extension = "md",
+    force_ft = "markdown",
+})

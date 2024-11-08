@@ -7,3 +7,6 @@
 3. Install luarocks from source (download and extract archive, `./configure --with-lua-include=/usr/local/include --with-lua-version=5.1`, `make`, `sudo make install` )
 
 Run `:checkhealth` in nvim - ensure luarocks and lua are okay!
+
+
+Run `:UpdateRemotePlugins`

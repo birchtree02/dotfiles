@@ -20,8 +20,10 @@ return {
       max_width_window_percentage = math.huge,
       window_overlap_clear_enabled = true,
       window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },
+      hijack_file_patterns = { "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp", "*.avif" }, -- render image files as images when opened
+      tmux_show_only_in_active_window = true,
     },
-    version = "1.1.0"
+    version = "1.3.0"
   },
   {
     "vhyrro/luarocks.nvim",

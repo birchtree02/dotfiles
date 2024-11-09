@@ -12,7 +12,12 @@ return {
       require "configs.lspconfig"
     end,
   },
-
+  {
+    "ojroques/nvim-bufdel",
+    keys = {
+      {"<leader>bd", ":BufDel<CR>"}
+    }
+  },
   -- {
   -- 	"nvim-treesitter/nvim-treesitter",
   -- 	opts = {

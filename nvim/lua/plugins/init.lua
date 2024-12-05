@@ -7,6 +7,9 @@ return {
 
   -- These are some examples, uncomment them if you want to see them work!
   {
+    "williamboman/mason-lspconfig.nvim",
+  },
+  {
     "neovim/nvim-lspconfig",
     config = function()
       require "configs.lspconfig"
@@ -27,4 +30,13 @@ return {
   		},
   	},
   },
+  {
+    "xiyaowong/transparent.nvim",
+    lazy=false,
+    opts = {
+      extra_groups = {
+        "NvimTreeNormal"
+      }
+    }
+  }
 }

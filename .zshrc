@@ -177,4 +177,10 @@ rmvenv() {
       rm -r $VENV_HOME/$1
   fi
 }
+
+sshdice() {
+  tunblkctl connect --wait groups.inf.ed.ac.uk_inf-unit_OpenVPN_Config_Mac_Informatics-EdLAN-Forum
+  ssh s2077814@student.ssh.inf.ed.ac.uk
+}
+
 source ~/dotfiles/notes.sh

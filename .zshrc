@@ -184,3 +184,13 @@ sshdice() {
 }
 
 source ~/dotfiles/notes.sh
+skim() {
+  if [ $# -eq 0 ]
+    then 
+      open skim://
+    else
+      abs_path=$(realpath "$1")
+      echo "Opening" $abs_path
+      open skim://$abs_path
+  fi
+}

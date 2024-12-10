@@ -11,6 +11,8 @@ end, { desc = "Initialize Molten for python3", silent = true })
 
 vim.keymap.set("n", "<localleader>mi", ":MoltenInit<CR>",
     { silent = true, desc = "Initialize the plugin" })
+vim.keymap.set("n", "<localleader>in", ":MoltenInterrupt<CR>",
+    { silent = true, desc = "Interrupt the kernel" })
 vim.keymap.set("n", "<localleader>e", ":MoltenEvaluateOperator<CR>",
     { silent = true, desc = "run operator selection" })
 vim.keymap.set("n", "<localleader>rl", ":MoltenEvaluateLine<CR>",

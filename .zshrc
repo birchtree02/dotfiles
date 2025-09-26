@@ -178,12 +178,6 @@ rmvenv() {
   fi
 }
 
-sshdice() {
-  tunblkctl connect --wait groups.inf.ed.ac.uk_inf-unit_OpenVPN_Config_Mac_Informatics-EdLAN-Forum
-  ssh s2077814@student.ssh.inf.ed.ac.uk
-}
-
-source ~/dotfiles/notes.sh
 skim() {
   if [ $# -eq 0 ]
     then 
@@ -194,3 +188,5 @@ skim() {
       open skim://$abs_path
   fi
 }
+
+source ~/.beerme/beerme.sh

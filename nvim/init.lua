@@ -38,6 +38,7 @@ vim.schedule(function()
   require "mappings"
 end)
 
+require "configs.markdown"
 require "configs.molten"
 
 vim.g.python3_host_prog=vim.fn.expand("~/.virtualenvs/neovim/bin/python3")

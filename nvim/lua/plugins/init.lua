@@ -19,6 +19,9 @@ return {
     "ojroques/nvim-bufdel",
     keys = {
       {"<leader>bd", ":BufDel<CR>"}
+    },
+    opts = {
+      quit = false,
     }
   },
   {

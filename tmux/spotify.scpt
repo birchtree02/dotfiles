@@ -45,6 +45,10 @@ tell application "Spotify"
     set album_name to album of current track
     set player_state to player state as string
 
+    if player_state is "paused" then
+      return "♫ 💤"
+    end if
+
     return my printSongInfo(player_state, track_name, album_name, artist_name)
 end tell
 

@@ -1,4 +1,4 @@
-source ~/.dir_aliases
+# source ~/.dir_aliases
 
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
@@ -106,32 +106,17 @@ export LANG=en_US.UTF-8
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/opt/homebrew/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh" ]; then
-        . "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh"
-    else
-        export PATH="/opt/homebrew/Caskroom/miniconda/base/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
-
 eval "$(zoxide init --cmd cd zsh)"
 
-echo ""
-echo "Tmux windows:"
-echo "$(tmux ls)"
-. "$HOME/.cargo/env"
+# echo ""
+# echo "Tmux windows:"
+# echo "$(tmux ls)"
+# . "$HOME/.cargo/env"
 
-if [[ -n "$TMUX" ]] then
-  export flavor='conda'
-  source $HOME/.config/tmux/plugins/tmux-conda-inherit/conda-inherit.sh
-fi
+# if [[ -n "$TMUX" ]] then
+#   export flavor='conda'
+#   source $HOME/.config/tmux/plugins/tmux-conda-inherit/conda-inherit.sh
+# fi
 
 export PYTHONPATH=$PYTHONPATH:/Users/edwardbirchall/Library/CloudStorage/OneDrive-ZuluForestLtd/1Drive/shared-python-scripts
 export DYLD_FALLBACK_LIBRARY_PATH="$(brew --prefix)/lib:$DYLD_FALLBACK_LIBRARY_PATH"
@@ -189,4 +174,4 @@ skim() {
   fi
 }
 
-source ~/.beerme/beerme.sh
+# source ~/.beerme/beerme.sh

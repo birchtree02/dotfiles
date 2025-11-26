@@ -26,6 +26,7 @@ require("lazy").setup({
 
   { import = "plugins" },
 }, lazy_config)
+require("java").setup()
 
 -- load theme
 dofile(vim.g.base46_cache .. "defaults")
@@ -40,6 +41,7 @@ end)
 
 require "configs.markdown"
 require "configs.molten"
+require "plugins.tmux"
 
 vim.g.python3_host_prog=vim.fn.expand("~/.virtualenvs/neovim/bin/python3")
 

@@ -28,3 +28,6 @@ vim.keymap.set('n', '<C-h>', function() smart_move('h', '-L') end, {silent = tru
 vim.keymap.set('n', '<C-j>', function() smart_move('j', '-D') end, {silent = true})
 vim.keymap.set('n', '<C-k>', function() smart_move('k', '-U') end, {silent = true})
 vim.keymap.set('n', '<C-l>', function() smart_move('l', '-R') end, {silent = true})
+
+map("n", "<leader>gb", ":Gitsigns blame<CR>")
+map("n", "<leader>gbl", ":Gitsigns blame_line<CR>")

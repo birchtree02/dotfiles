@@ -4,9 +4,9 @@ return {
     -- event = 'BufWritePre', -- uncomment for format on save
     opts = require "configs.conform",
   },
-  {
-    "nvim-java/nvim-java",
-  },
+  -- {
+  --   "nvim-java/nvim-java",
+  -- },
 
   -- These are some examples, uncomment them if you want to see them work!
   {
@@ -58,6 +58,12 @@ return {
         "bash", "java", "promql", "sql",
        "html", "css", "markdown", "python"
   		},
+      indent = {
+        enable = true,
+        disable = function(lang)
+          return lang == "java"
+        end,
+      }
   	},
   },
   {

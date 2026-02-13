@@ -23,6 +23,14 @@ cd ~/.config
 ln -s /path/to/cloned/repository/nvim nvim
 ```
 
+## Kitty
+Install
+
+```
+cd ~/.config
+ln -s /path/to/cloned/repository/kitty kitty
+```
+
 #### Install lua-5.1 and luarocks:
 1. Remove existing lua installation
 2. Install lua-5.1 from source (download and extract archive,`make` `sudo make install`)

@@ -9,8 +9,9 @@ map("n", " /", "<cmd>normal gcc<cr><cr>", { desc = "Comment Line" })
 map("n", "gco", "o<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add Comment Below" })
 map("n", "gcO", "O<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add Comment Above" })
 
--- lazy
+-- open
 map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy" })
+map("n", "<leader>m", "<cmd>Mason<cr>", { desc = "Mason" })
 
 -- formatting
 map({ "n", "x" }, "<leader>cf", function()

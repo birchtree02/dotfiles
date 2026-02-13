@@ -1,5 +1,10 @@
 return {
   {
+    "catppuccin/nvim",
+    name = "catppuccin",
+    priority = 1000
+  },
+  {
     "nvim-tree/nvim-tree.lua",
     keys = {
       { "<c-n>", "<cmd>NvimTreeToggle<cr>", desc = "NvimTree" },

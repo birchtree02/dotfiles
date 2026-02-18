@@ -5,30 +5,6 @@ return {
 		priority = 1000,
 	},
 	{
-		"nvim-tree/nvim-tree.lua",
-		keys = {
-			{ "<c-n>", "<cmd>NvimTreeToggle<cr>", desc = "NvimTree" },
-		},
-		version = "*",
-		lazy = false,
-		dependencies = {
-			"nvim-tree/nvim-web-devicons",
-		},
-		config = function()
-			require("nvim-tree").setup({
-				sort = {
-					sorter = "case_sensitive",
-				},
-				view = {
-					width = 30,
-				},
-				renderer = {
-					group_empty = true,
-				},
-			})
-		end,
-	},
-	{
 		"christoomey/vim-tmux-navigator",
 		cmd = {
 			"TmuxNavigateLeft",

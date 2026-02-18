@@ -30,9 +30,21 @@ require("lazy").setup({
   -- Configure any other settings here. See the documentation for more details.
   -- colorscheme that will be used when installing plugins.
   install = { colorscheme = { "habamax" } },
-  -- automatically check for plugin updates
-  checker = { 
-    enabled = true,
-    frequency = 86400, -- check once per day (in seconds)
-  },
+})
+
+-- Auto-update plugins once per calendar day
+local last_update_file = vim.fn.stdpath("data") .. "/lazy_last_update" -- ~/.local/share/nvim/lazy_last_update
+local function should_update()
+  local today = os.date("%Y-%m-%d")
+  local last_date = vim.fn.filereadable(last_update_file) == 1 and vim.fn.readfile(last_update_file)[1] or ""
+  return today ~= last_date
+end
+
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    if should_update() then
+      require("lazy").sync({ wait = false })
+      vim.fn.writefile({ os.date("%Y-%m-%d") }, last_update_file)
+    end
+  end,
 })

@@ -10,7 +10,8 @@ require("mason-tool-installer").setup({
     "pyright",
     -- bash
     "shfmt",
-  }
+  },
+  auto_update = true,
 })
 
 -- Improve LSP settings for nvim config

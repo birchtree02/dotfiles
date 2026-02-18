@@ -1,5 +1,8 @@
 local map = vim.keymap.set
 
+-- insert mode
+map("i", "jk", "<Esc>", { desc = "Exit insert mode" })
+
 -- buffers
 map("n", "<tab>", "<cmd>bnext<cr>", { desc = "Next buffer" })
 map("n", "<S-tab>", "<cmd>bprevious<cr>", { desc = "Previous buffer" })

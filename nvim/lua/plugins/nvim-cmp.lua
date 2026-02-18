@@ -11,32 +11,6 @@ return {
 		local cmp = require("cmp")
     local luasnip = require('luasnip')
 
-    -- Define snippets
-    luasnip.add_snippets('markdown', {
-      luasnip.snippet('today', {
-        luasnip.function_node(function()
-          return os.date('%A %Y-%m-%d')
-        end)
-      }),
-      luasnip.snippet('tomorrow', {
-        luasnip.function_node(function()
-          return os.date('%A %Y-%m-%d', os.time() + 86400)
-        end)
-      }),
-      luasnip.snippet('tomorrow_wd', {
-        luasnip.function_node(function()
-          local tomorrow = os.time() + 86400
-          local wday = tonumber(os.date('%w', tomorrow))
-          if wday == 0 then -- Sunday -> Monday
-            tomorrow = tomorrow + 86400
-          elseif wday == 6 then -- Saturday -> Monday
-            tomorrow = tomorrow + 172800
-          end
-          return os.date('%A %Y-%m-%d', tomorrow)
-        end)
-      })
-    })
-
 		cmp.setup({
       snippet = {
         expand = function(args)

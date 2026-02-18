@@ -10,7 +10,6 @@ Choose the font in iterm settings
 ```
 cd ~/.config
 ln -s /path/to/cloned/repository/tmux tmux
-ln -s /path/to/cloned/repository/tmux-powerline tmux-powerline
 ```
 
 Run `tmux`

@@ -23,7 +23,7 @@ return {
 			desc = "Buffers",
 		},
 		{
-			"<leader>/",
+			"<leader>fw",
 			function()
 				Snacks.picker.grep()
 			end,

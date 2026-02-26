@@ -23,6 +23,11 @@ opt.virtualedit = "block" -- Allow cursor to move where there is no text in visu
 opt.wildmode = "longest:full,full" -- Command-line completion mode
 opt.winminwidth = 5 -- Minimum window width
 opt.wrap = false -- Disable line wrap
+opt.fillchars = { vert = "│", horiz = "─", horizup = "┴", horizdown = "┬", vertleft = "┤", vertright = "├", verthoriz = "┼" }
+opt.laststatus = 3 -- Global statusline
+
+-- Highlight split borders
+vim.api.nvim_set_hl(0, "WinSeparator", { fg = "#7aa2f7", bold = true })
 
 -- Disable undo file if path is too long
 vim.api.nvim_create_autocmd("BufWritePre", {

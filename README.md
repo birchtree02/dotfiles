@@ -19,6 +19,10 @@ Run `tmux`
 Install nvim
 
 ```
+brew install pngpaste imagemagick
+```
+
+```
 cd ~/.config
 ln -s /path/to/cloned/repository/nvim nvim
 ```

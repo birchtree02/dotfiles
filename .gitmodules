@@ -1,3 +1,6 @@
 [submodule "work"]
 	path = work
 	url = git@github.com:birchtree02/dotfiles-cloudsoft.git
+[submodule "wiktor-shell-files"]
+	path = wiktor-shell-files
+	url = git@github.com:wiktoraleksanderkaczor/shell-files.git

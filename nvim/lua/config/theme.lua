@@ -5,13 +5,5 @@ local function get_flavor()
   return link:match("latte") and "latte" or "mocha"
 end
 
-local function apply_theme()
-  require("catppuccin").setup({ flavour = get_flavor() })
-  vim.cmd.colorscheme("catppuccin")
-end
-
-apply_theme()
-
-vim.api.nvim_create_autocmd("FocusGained", {
-  callback = apply_theme,
-})
+require("catppuccin").setup({ flavour = get_flavor() })
+vim.cmd.colorscheme("catppuccin")

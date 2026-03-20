@@ -14,5 +14,9 @@ ln -sf "catppuccin-$flavor.conf" "$TMUX_DIR/catppuccin.conf"
 
 kill -SIGUSR1 $(pgrep -x kitty) 2>/dev/null
 tmux source-file "$TMUX_DIR/tmux.conf" 2>/dev/null
+for sock in "$TMPDIR"/nvim.*/*/nvim.*.0; do
+  nvim --server "$sock" --remote-send "<Cmd>colorscheme catppuccin-$flavor<CR>" 2>/dev/null &
+done
+wait
 
 echo "Switched to catppuccin-$flavor"

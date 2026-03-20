@@ -18,7 +18,13 @@ return {
 		{
 			"<leader>,",
 			function()
-				Snacks.picker.buffers()
+				Snacks.picker.buffers({
+					sort_lastused = true,
+					on_show = function(picker)
+						vim.cmd("stopinsert")
+						picker.list:move(1)
+					end,
+				})
 			end,
 			desc = "Buffers",
 		},

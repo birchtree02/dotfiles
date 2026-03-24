@@ -29,6 +29,13 @@ opt.laststatus = 3 -- Global statusline
 -- Highlight split borders
 vim.api.nvim_set_hl(0, "WinSeparator", { fg = "#7aa2f7", bold = true })
 
+-- Enable treesitter highlighting
+vim.api.nvim_create_autocmd("FileType", {
+	callback = function()
+		pcall(vim.treesitter.start)
+	end,
+})
+
 -- Disable undo file if path is too long
 vim.api.nvim_create_autocmd("BufWritePre", {
 	callback = function()

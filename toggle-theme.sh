@@ -15,10 +15,6 @@ fi
 
 echo "$new" > "$THEME_FILE"
 
-# Kitty
-ln -sf "$kitty_conf" "$KITTY_DIR/current-theme.conf"
-kitty @ --to unix:/tmp/kitty set-colors -a -c "$KITTY_DIR/$kitty_conf" 2>/dev/null
-
 # Tmux
 tmux set -g @thm_bg "$tmux_bg" 2>/dev/null
 tmux set -g @thm_fg "$tmux_fg" 2>/dev/null
@@ -27,4 +23,8 @@ tmux set -g @surface1 "$tmux_s1" 2>/dev/null
 tmux set -g @teal "$tmux_teal" 2>/dev/null
 tmux set -g @blue "$tmux_blue" 2>/dev/null
 tmux source-file ~/.config/tmux/tmux.conf 2>/dev/null
+
+# Kitty
+ln -sf "$kitty_conf" "$KITTY_DIR/current-theme.conf"
+kitty @ --to unix:/tmp/kitty set-colors -a -c "$KITTY_DIR/$kitty_conf" 2>/dev/null
 

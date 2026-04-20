@@ -23,8 +23,24 @@ opt.virtualedit = "block" -- Allow cursor to move where there is no text in visu
 opt.wildmode = "longest:full,full" -- Command-line completion mode
 opt.winminwidth = 5 -- Minimum window width
 opt.wrap = false -- Disable line wrap
-opt.fillchars = { vert = "│", horiz = "─", horizup = "┴", horizdown = "┬", vertleft = "┤", vertright = "├", verthoriz = "┼" }
+opt.fillchars = {
+	vert = "│",
+	horiz = "─",
+	horizup = "┴",
+	horizdown = "┬",
+	vertleft = "┤",
+	vertright = "├",
+	verthoriz = "┼",
+}
 opt.laststatus = 3 -- Global statusline
+opt.winbar = " %f" -- Show filename at top of each window
+
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "NvimTree_1",
+	callback = function()
+		vim.opt_local.winbar = ""
+	end,
+})
 
 -- Highlight split borders
 vim.api.nvim_set_hl(0, "WinSeparator", { fg = "#7aa2f7", bold = true })

@@ -1,5 +1,6 @@
 return {
   "3rd/image.nvim",
+  enabled = vim.env.NVIM_DEVICE == "mac",
   ft = { "markdown" },
   opts = {
     backend = "kitty",

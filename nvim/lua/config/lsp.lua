@@ -39,13 +39,13 @@ vim.lsp.config("lua_ls", {
 	},
 })
 
--- Java LSP with Lombok support
--- vim.lsp.config('jdtls', {
--- cmd = {
--- 'jdtls',
--- '--jvm-arg=-javaagent:' .. vim.fn.expand('~/.local/share/nvim/mason/packages/jdtls/lombok.jar'),
--- },
--- })
+-- Java LSP with per-project workspace
+vim.lsp.config("jdtls", {
+	cmd = {
+		"jdtls",
+		"-data", vim.fn.expand("~/.cache/jdtls/workspace/") .. vim.fn.sha256(vim.fn.getcwd()):sub(1, 16),
+	},
+})
 
 -- Add borders to diagnostic windows
 vim.diagnostic.config({

@@ -3,7 +3,7 @@ return {
 	lazy = false,
 	build = ":TSUpdate",
 	config = function()
-		local parsers = { "bash", "vim", "lua", "vimdoc", "html", "css", "markdown", "markdown_inline", "python", "java", "yaml" }
+		local parsers = { "bash", "vim", "lua", "vimdoc", "html", "css", "markdown", "markdown_inline", "python", "java", "yaml", "json" }
 		local installed = require("nvim-treesitter").get_installed()
 		local to_install = vim.tbl_filter(function(p)
 			return not vim.list_contains(installed, p)

@@ -36,6 +36,22 @@ DO_KITTY=0
 
 [[ $# -eq 0 ]] && usage
 
+if ! command -v brew >/dev/null; then
+    echo "error: Homebrew is required but not installed." >&2
+    echo "Install it from https://brew.sh and re-run." >&2
+    exit 1
+fi
+
+ensure_brew() {
+    local pkg="$1"
+    if command -v "$pkg" >/dev/null; then
+        echo "  ✓ $pkg already installed"
+    else
+        echo "  - installing $pkg via brew..."
+        brew install "$pkg"
+    fi
+}
+
 for arg in "$@"; do
     case "$arg" in
         --all)   DO_ZSHRC=1; DO_NVIM=1; DO_TMUX=1; DO_KITTY=1 ;;
@@ -80,17 +96,15 @@ link_into_place() {
 # --- Components ---
 setup_zshrc() {
     echo "[zshrc]"
+    ensure_brew zoxide
     link_into_place "$DOTFILES/.zshrc" "$HOME/.zshrc"
 }
 
 setup_nvim() {
     echo "[nvim]"
+    ensure_brew nvim
     link_into_place "$DOTFILES/nvim" "$HOME/.config/nvim"
 
-    if ! command -v nvim >/dev/null; then
-        echo "  ! nvim not found on PATH — install it, then re-run to bootstrap plugins"
-        return
-    fi
     echo "  - bootstrapping Lazy.nvim plugins (headless sync)..."
     nvim --headless "+Lazy! sync" +qa 2>&1 | tail -5 || \
         echo "  ! Lazy sync exited non-zero — open nvim manually and run :Lazy sync"
@@ -98,6 +112,16 @@ setup_nvim() {
 
 setup_tmux() {
     echo "[tmux]"
+    ensure_brew tmux
+
+    # Config relies on tmux 3.x features (e.g. terminal-features, OSC 133).
+    local tmux_major
+    tmux_major="$(tmux -V | sed -nE 's/^tmux ([0-9]+).*/\1/p')"
+    if [[ -z "$tmux_major" || "$tmux_major" -lt 3 ]]; then
+        echo "  ! tmux $(tmux -V) is too old — config requires 3.x. Try: brew upgrade tmux" >&2
+        return 1
+    fi
+
     link_into_place "$DOTFILES/tmux" "$HOME/.config/tmux"
 
     local tpm_dir="$HOME/.tmux/plugins/tpm"

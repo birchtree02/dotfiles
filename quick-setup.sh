@@ -1,0 +1,133 @@
+#!/usr/bin/env bash
+#
+# quick-setup.sh — symlinks dotfiles components into place.
+#
+# Usage:
+#   ./quick-setup.sh --all                install everything
+#   ./quick-setup.sh zshrc nvim           install specific components
+#   ./quick-setup.sh tmux kitty
+#
+# Components: zshrc, nvim, tmux, kitty
+#
+# Existing files/symlinks at the target are renamed to <target>.backup-<timestamp>.
+
+set -euo pipefail
+
+DOTFILES="$(cd "$(dirname "$0")" && pwd)"
+TIMESTAMP="$(date +%Y%m%d-%H%M%S)"
+
+usage() {
+    cat <<EOF
+Usage: $(basename "$0") [--all] [zshrc] [nvim] [tmux] [kitty]
+
+Symlinks selected dotfiles components into place. Existing files are backed
+up to <target>.backup-${TIMESTAMP} before being replaced.
+
+You must pass --all or at least one component name.
+EOF
+    exit 1
+}
+
+# --- Argument parsing ---
+DO_ZSHRC=0
+DO_NVIM=0
+DO_TMUX=0
+DO_KITTY=0
+
+[[ $# -eq 0 ]] && usage
+
+for arg in "$@"; do
+    case "$arg" in
+        --all)   DO_ZSHRC=1; DO_NVIM=1; DO_TMUX=1; DO_KITTY=1 ;;
+        zshrc)   DO_ZSHRC=1 ;;
+        nvim)    DO_NVIM=1 ;;
+        tmux)    DO_TMUX=1 ;;
+        kitty)   DO_KITTY=1 ;;
+        -h|--help) usage ;;
+        *) echo "Unknown argument: $arg" >&2; usage ;;
+    esac
+done
+
+# --- Helpers ---
+link_into_place() {
+    local source="$1" target="$2"
+
+    if [[ ! -e "$source" ]]; then
+        echo "  ! source missing: $source — skipping" >&2
+        return 1
+    fi
+
+    if [[ -L "$target" ]]; then
+        local current
+        current="$(readlink "$target")"
+        if [[ "$current" == "$source" ]]; then
+            echo "  ✓ $target already linked"
+            return 0
+        fi
+        echo "  - $target points to $current — replacing"
+        rm "$target"
+    elif [[ -e "$target" ]]; then
+        local backup="${target}.backup-${TIMESTAMP}"
+        echo "  - $target exists — backing up to $backup"
+        mv "$target" "$backup"
+    fi
+
+    mkdir -p "$(dirname "$target")"
+    ln -s "$source" "$target"
+    echo "  ✓ linked $target → $source"
+}
+
+# --- Components ---
+setup_zshrc() {
+    echo "[zshrc]"
+    link_into_place "$DOTFILES/.zshrc" "$HOME/.zshrc"
+}
+
+setup_nvim() {
+    echo "[nvim]"
+    link_into_place "$DOTFILES/nvim" "$HOME/.config/nvim"
+
+    if ! command -v nvim >/dev/null; then
+        echo "  ! nvim not found on PATH — install it, then re-run to bootstrap plugins"
+        return
+    fi
+    echo "  - bootstrapping Lazy.nvim plugins (headless sync)..."
+    nvim --headless "+Lazy! sync" +qa 2>&1 | tail -5 || \
+        echo "  ! Lazy sync exited non-zero — open nvim manually and run :Lazy sync"
+}
+
+setup_tmux() {
+    echo "[tmux]"
+    link_into_place "$DOTFILES/tmux" "$HOME/.config/tmux"
+
+    local tpm_dir="$HOME/.tmux/plugins/tpm"
+    if [[ ! -d "$tpm_dir" ]]; then
+        echo "  - cloning tpm into $tpm_dir"
+        git clone --depth=1 https://github.com/tmux-plugins/tpm "$tpm_dir"
+    else
+        echo "  ✓ tpm already present"
+    fi
+
+    if [[ -x "$tpm_dir/scripts/install_plugins.sh" ]]; then
+        echo "  - installing tmux plugins via tpm..."
+        "$tpm_dir/scripts/install_plugins.sh" || \
+            echo "  ! tpm install exited non-zero — start tmux and press prefix+I"
+    fi
+}
+
+setup_kitty() {
+    echo "[kitty]"
+    link_into_place "$DOTFILES/kitty" "$HOME/.config/kitty"
+}
+
+# --- Run ---
+echo "dotfiles: $DOTFILES"
+echo
+
+(( DO_ZSHRC )) && setup_zshrc
+(( DO_NVIM ))  && setup_nvim
+(( DO_TMUX ))  && setup_tmux
+(( DO_KITTY )) && setup_kitty
+
+echo
+echo "done."

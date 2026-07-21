@@ -13,16 +13,18 @@ root=$1
 tree=$(ps -A -o pid=,ppid=,tpgid=)
 
 pid=$root
-# Walk up to a small depth to avoid loops on odd process trees.
+# Check tpgid at each level, walking down through wrapper shells as needed.
+# On Linux the pane pid IS the shell, so we check it directly first.
+# On macOS with kiro-cli-term the pane pid is a wrapper and we must descend.
 for _ in 1 2 3 4 5; do
-  child=$(printf '%s\n' "$tree" | awk -v p="$pid" '$2==p {print $1; exit}')
-  [ -z "$child" ] && break
-  pid=$child
   tpgid=$(printf '%s\n' "$tree" | awk -v p="$pid" '$1==p {print $3; exit}')
   [ -n "$tpgid" ] && [ "$tpgid" != "0" ] && [ "$tpgid" != "-1" ] && [ "$tpgid" != "$pid" ] && {
     cmd=$(ps -o command= -p "$tpgid" 2>/dev/null)
     [ -n "$cmd" ] && { printf '%s\n' "$cmd"; exit 0; }
   }
+  child=$(printf '%s\n' "$tree" | awk -v p="$pid" '$2==p {print $1; exit}')
+  [ -z "$child" ] && break
+  pid=$child
 done
 
 # Nothing distinct in foreground — report the deepest shell's own command.

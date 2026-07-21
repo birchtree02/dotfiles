@@ -80,6 +80,18 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
+# Report the running command to tmux's status line via a per-pane option.
+# preexec fires with the full command line before it runs; precmd clears it
+# once the command returns. Writing straight to a tmux option sidesteps PTY
+# wrappers (e.g. kiro-cli-term) that hide the real process from pane_current_command.
+if [[ -n "$TMUX" && -n "$TMUX_PANE" ]]; then
+  autoload -Uz add-zsh-hook
+  _tmux_panecmd_preexec() { tmux set -p -t "$TMUX_PANE" @pane_cmd "$1" 2>/dev/null }
+  _tmux_panecmd_precmd()  { tmux set -pu -t "$TMUX_PANE" @pane_cmd 2>/dev/null }
+  add-zsh-hook preexec _tmux_panecmd_preexec
+  add-zsh-hook precmd _tmux_panecmd_precmd
+fi
+
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"

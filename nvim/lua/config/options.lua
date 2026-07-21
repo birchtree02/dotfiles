@@ -4,7 +4,19 @@ vim.g.autoformat = true
 
 local opt = vim.opt
 
-opt.clipboard = vim.env.SSH_CONNECTION and "" or "unnamedplus"
+opt.clipboard = "unnamedplus"
+-- Let tmux own all the OSC 52 clipboard handling instead of emitting it from
+-- nvim. Yanking to the unnamed register hands the text to tmux via load-buffer,
+-- and tmux forwards it to the local clipboard (mosh-safe; see tmux.conf). This
+-- works under mosh too, where SSH_CONNECTION is unset so a provider gated on it
+-- would never fire.
+vim.api.nvim_create_autocmd("TextYankPost", {
+	callback = function()
+		if vim.v.event.operator == "y" and vim.v.event.regname == "" then
+			vim.fn.system("tmux load-buffer -w -", vim.fn.getreg(""))
+		end
+	end,
+})
 opt.autowrite = true -- Auto write on change buffer
 opt.completeopt = "menu,menuone,noselect"
 opt.number = true -- shows line numbers

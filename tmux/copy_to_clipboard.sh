@@ -1,7 +1,19 @@
 #!/bin/sh
-# Copy $1 to the system clipboard and a tmux buffer, then flash a status
+# Copy text to the system clipboard and a tmux buffer, then flash a status
 # message. Portable across macOS (pbcopy) and Linux (wl-copy / xclip / xsel).
-text="$1"
+#
+# Usage:
+#   copy_to_clipboard.sh <text>                 copy a literal argument
+#   copy_to_clipboard.sh --opt <pane> <name>    copy a per-pane tmux option
+#
+# The --opt form reads the value with `tmux show -pv`, which preserves embedded
+# newlines exactly. Passing a multi-line value as a shell argument would break
+# at the first newline, so multi-line commands must use --opt.
+if [ "$1" = "--opt" ]; then
+  text="$(tmux show -pv -t "$2" "$3")"
+else
+  text="$1"
+fi
 [ -z "$text" ] && exit 0
 
 if command -v pbcopy >/dev/null 2>&1; then

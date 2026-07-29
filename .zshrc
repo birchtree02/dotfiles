@@ -81,13 +81,21 @@ plugins=(
 source $ZSH/oh-my-zsh.sh
 
 # Report the running command to tmux's status line via a per-pane option.
-# preexec fires with the full command line before it runs; precmd clears it
+# preexec fires with the full command line before it runs; precmd marks it done
 # once the command returns. Writing straight to a tmux option sidesteps PTY
 # wrappers (e.g. kiro-cli-term) that hide the real process from pane_current_command.
+# Two command options are stored: @pane_cmd_raw keeps real newlines (for copying
+# the command exactly as typed) while @pane_cmd renders them as literal "\n" so
+# the single-line status bar shows multi-line commands on one line.
+# @pane_cmd_running drives the status-line color (teal running, grey completed).
 if [[ -n "$TMUX" && -n "$TMUX_PANE" ]]; then
   autoload -Uz add-zsh-hook
-  _tmux_panecmd_preexec() { tmux set -p -t "$TMUX_PANE" @pane_cmd "$1" 2>/dev/null }
-  _tmux_panecmd_precmd()  { tmux set -pu -t "$TMUX_PANE" @pane_cmd 2>/dev/null }
+  _tmux_panecmd_preexec() {
+    tmux set -p -t "$TMUX_PANE" @pane_cmd_raw "$1" \; \
+         set -p -t "$TMUX_PANE" @pane_cmd "${1//$'\n'/\\n}" \; \
+         set -p -t "$TMUX_PANE" @pane_cmd_running 1 2>/dev/null
+  }
+  _tmux_panecmd_precmd()  { tmux set -p -t "$TMUX_PANE" @pane_cmd_running 0 2>/dev/null }
   add-zsh-hook preexec _tmux_panecmd_preexec
   add-zsh-hook precmd _tmux_panecmd_precmd
 fi

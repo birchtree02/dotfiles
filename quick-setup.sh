@@ -144,6 +144,16 @@ setup_kitty() {
     link_into_place "$DOTFILES/kitty" "$HOME/.config/kitty"
 }
 
+# Machine-local state (theme flavour, kitty padding). kitty.conf and tmux.conf
+# include generated files from the state dir, so these must exist before either
+# starts cleanly. Existing state is preserved — this only fills in defaults.
+setup_state() {
+    echo "[state]"
+    local summary
+    summary="$("$DOTFILES/scripts/apply-state.sh")"
+    echo "  ✓ generated $HOME/.local/state/dotfiles ($summary)"
+}
+
 # --- Run ---
 echo "dotfiles: $DOTFILES"
 echo
@@ -152,6 +162,8 @@ echo
 (( DO_NVIM ))  && setup_nvim
 (( DO_TMUX ))  && setup_tmux
 (( DO_KITTY )) && setup_kitty
+# After the symlinks: the generated files reference ~/.config/{kitty,tmux}.
+(( DO_TMUX || DO_KITTY || DO_NVIM )) && setup_state
 
 echo
 echo "done."

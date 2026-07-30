@@ -1,4 +1,7 @@
 require("mason").setup()
+-- No opts here on purpose: mason-lspconfig's settings come from the plugin spec
+-- in lua/plugins/lsp.lua. Passing a table would deep-merge over those settings
+-- and clobber the automatic_enable exclude list that keeps jdtls off.
 require("mason-lspconfig").setup()
 require("mason-tool-installer").setup({
 	ensure_installed = {
@@ -8,10 +11,11 @@ require("mason-tool-installer").setup({
 		-- python
 		"black",
 		"pyright",
+		-- java
+		-- jdtls is installed via mason-lspconfig's ensure_installed and started
+		-- by nvim-jdtls, not by mason's automatic_enable. See lua/plugins/lsp.lua.
 		-- bash
 		"shfmt",
-		-- java
-		"jdtls",
 	},
 	auto_update = true,
 })
@@ -39,13 +43,9 @@ vim.lsp.config("lua_ls", {
 	},
 })
 
--- Java LSP with per-project workspace
-vim.lsp.config("jdtls", {
-	cmd = {
-		"jdtls",
-		"-data", vim.fn.expand("~/.cache/jdtls/workspace/") .. vim.fn.sha256(vim.fn.getcwd()):sub(1, 16),
-	},
-})
+-- Java (jdtls) is deliberately not configured here. nvim-jdtls owns it so that
+-- lombok, bemol workspace folders and the extended code actions all apply; a
+-- vim.lsp.config("jdtls") block here would fight that with a second -data dir.
 
 -- Add borders to diagnostic windows
 vim.diagnostic.config({

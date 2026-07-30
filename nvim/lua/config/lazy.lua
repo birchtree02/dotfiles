@@ -15,13 +15,6 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- Add work submodule to runtime path if it exists
-local config_real = vim.fn.resolve(vim.fn.stdpath("config"))
-local work_path = vim.fn.fnamemodify(config_real, ":h") .. "/work/nvim"
-if vim.fn.isdirectory(work_path) == 1 then
-  vim.opt.rtp:prepend(work_path)
-end
-
 -- Make sure to setup `mapleader` and `maplocalleader` before
 -- loading lazy.nvim so that mappings are correct.
 -- This is also a good place to setup other settings (vim.opt)
@@ -32,9 +25,9 @@ vim.g.maplocalleader = "\\"
 require("lazy").setup({
 	spec = {
 		-- import your plugins
+		-- Work-specific specs are symlinked into lua/plugins/ from the work
+		-- submodule, so they are picked up by this import too.
 		{ import = "plugins" },
-		-- import work plugins if they exist
-		{ import = "work-plugins" },
 	},
 	-- Configure any other settings here. See the documentation for more details.
 	-- colorscheme that will be used when installing plugins.

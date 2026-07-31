@@ -1,5 +1,8 @@
 .DS_store
 tmux/plugins
 nvim/lazy-lock.json
-nvim/lua/config/cloudsoft.lua
+# Symlinks created by work/link-nvim.sh
+nvim/lua/plugins/cloudsoft.lua
+nvim/lua/plugins/conform.lua
+nvim/lua/plugins/scat.lua
 .ralph

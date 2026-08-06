@@ -103,6 +103,10 @@ setup_zshrc() {
 setup_nvim() {
     echo "[nvim]"
     ensure_brew nvim
+    # nvim-treesitter (main branch) compiles parsers with the tree-sitter CLI.
+    # The `tree-sitter-cli` formula is the actual binary; plain `tree-sitter` is
+    # library-only. The npm/cargo builds don't work on this glibc — use brew.
+    ensure_brew tree-sitter-cli
     link_into_place "$DOTFILES/nvim" "$HOME/.config/nvim"
 
     echo "  - bootstrapping Lazy.nvim plugins (headless sync)..."

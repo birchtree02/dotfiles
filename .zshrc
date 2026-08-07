@@ -80,6 +80,21 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
+# OSC 133 shell-integration markers, so tmux copy-mode can jump between commands
+# (previous-prompt / next-prompt) and select a command's output (the `o` binding).
+# 133;A must be part of PROMPT, not emitted from a precmd hook: tmux records the
+# marker against a grid line, and ZLE redraws the prompt line after precmd runs,
+# wiping anything written there beforehand. %{...%} keeps it zero-width so the
+# prompt's own geometry is unaffected. Must come after oh-my-zsh.sh, which is
+# where the theme assigns PROMPT.
+# 133;C marks where output begins, which is what previous-prompt -o homes in on.
+if [[ $TERM != "dumb" ]]; then
+  PROMPT="%{"$'\e]133;A\a'"%}$PROMPT"
+  autoload -Uz add-zsh-hook
+  _osc133_preexec() { print -Pn $'\e]133;C\a' }
+  add-zsh-hook preexec _osc133_preexec
+fi
+
 # Report the running command to tmux's status line via a per-pane option.
 # preexec fires with the full command line before it runs; precmd marks it done
 # once the command returns. Writing straight to a tmux option sidesteps PTY

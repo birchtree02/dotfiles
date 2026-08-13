@@ -16,7 +16,12 @@ return {
 			nested = true, -- let a chosen session fire its own BufReadPre/filetype autocmds
 			callback = function()
 				if vim.fn.argc(-1) == 0 and not vim.g.persistence_stdin then
-					require("persistence").select()
+					-- Defer so this runs after snacks swaps vim.ui.select on UIEnter.
+					-- persistence.select() calls vim.ui.select; without the defer it can
+					-- fire before the swap and fall back to the default (non-snacks) UI.
+					vim.schedule(function()
+						require("persistence").select()
+					end)
 				end
 			end,
 		})

@@ -34,19 +34,19 @@ require("lazy").setup({
 	install = { colorscheme = { "habamax" } },
 })
 
--- Auto-update plugins once per calendar day
+-- Auto-update plugins at most once a week
 local last_update_file = vim.fn.stdpath("data") .. "/lazy_last_update" -- ~/.local/share/nvim/lazy_last_update
+local week_seconds = 7 * 24 * 60 * 60
 local function should_update()
-	local today = os.date("%Y-%m-%d")
-	local last_date = vim.fn.filereadable(last_update_file) == 1 and vim.fn.readfile(last_update_file)[1] or ""
-	return today ~= last_date
+	local last = tonumber(vim.fn.filereadable(last_update_file) == 1 and vim.fn.readfile(last_update_file)[1] or "")
+	return not last or os.time() - last >= week_seconds
 end
 
 vim.api.nvim_create_autocmd("VimEnter", {
 	callback = function()
 		if should_update() then
 			require("lazy").sync({ wait = false })
-			vim.fn.writefile({ os.date("%Y-%m-%d") }, last_update_file)
+			vim.fn.writefile({ tostring(os.time()) }, last_update_file)
 		end
 	end,
 })

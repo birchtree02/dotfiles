@@ -5,6 +5,22 @@ vim.api.nvim_create_autocmd("FileType", {
 		vim.opt_local.wrap = true
 		vim.opt_local.linebreak = true
 
+		-- Visual P: wrap the selection as a markdown link, taking the URL from the
+		-- system clipboard. With clipboard=unnamedplus the register `p` actually
+		-- pastes is "+" (read via the OS provider); the unnamed register `"` only
+		-- holds what was last yanked inside nvim, so it misses a link copied in the
+		-- browser. Read "+" first — before the change clobbers the registers — and
+		-- stash it in register l, then rebuild the text as [selection](url). Fed
+		-- with the 'n' flag so the inserted () and [] don't trigger mini.pairs.
+		vim.keymap.set("x", "P", function()
+			local url = vim.trim(vim.fn.getreg("+"))
+			local save_reg, save_type = vim.fn.getreg("l"), vim.fn.getregtype("l")
+			vim.fn.setreg("l", url)
+			local keys = vim.api.nvim_replace_termcodes('c[<C-r>"](<C-r>l)<Esc>', true, false, true)
+			vim.api.nvim_feedkeys(keys, "nx", false)
+			vim.fn.setreg("l", save_reg, save_type)
+		end, { buffer = true, desc = "Wrap selection as markdown link (URL from default register)" })
+
 		-- Define snippets
 		local luasnip = require("luasnip")
 		luasnip.add_snippets("markdown", {

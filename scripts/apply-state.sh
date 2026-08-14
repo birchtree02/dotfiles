@@ -103,4 +103,9 @@ cat >"$STATE_DIR/zsh-generated.sh" <<EOF
 . "$DOTFILES/zsh/catppuccin-$theme.sh"
 EOF
 
+# Claude Code watches ~/.claude/themes/ and live-reloads on change. Copy the
+# appropriate flavour file so running instances repaint immediately.
+mkdir -p "$HOME/.claude/themes"
+cp "$DOTFILES/claude/catppuccin-$theme.json" "$HOME/.claude/themes/catppuccin.json"
+
 printf 'theme=%s padding=%s\n' "$theme" "$padding"

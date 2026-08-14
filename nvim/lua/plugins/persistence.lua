@@ -2,26 +2,24 @@ return {
 	"folke/persistence.nvim",
 	event = "BufReadPre", -- this will only start session saving when an actual file was opened
 	init = function()
-		-- Open the session picker when nvim starts with no file arguments — e.g.
-		-- when tmux-resurrect relaunches a bare `nvim` in a restored pane. `nvim
-		-- <file>` and piped stdin are left alone. Registered in init (not config)
-		-- so the VimEnter hook exists before VimEnter fires; requiring persistence
-		-- in the callback lazy-loads the plugin and runs setup() first.
+		-- Restore the current directory's session when nvim starts with no file
+		-- arguments — e.g. when tmux-resurrect relaunches a bare `nvim` in a
+		-- restored pane. `nvim <file>` and piped stdin are left alone. Registered
+		-- in init (not config) so the VimEnter hook exists before VimEnter fires;
+		-- requiring persistence in the callback lazy-loads it and runs setup() first.
 		vim.api.nvim_create_autocmd("StdinReadPre", {
 			callback = function()
 				vim.g.persistence_stdin = true
 			end,
 		})
 		vim.api.nvim_create_autocmd("VimEnter", {
-			nested = true, -- let a chosen session fire its own BufReadPre/filetype autocmds
+			nested = true, -- let a restored session fire its own BufReadPre/filetype autocmds
 			callback = function()
 				if vim.fn.argc(-1) == 0 and not vim.g.persistence_stdin then
-					-- Defer so this runs after snacks swaps vim.ui.select on UIEnter.
-					-- persistence.select() calls vim.ui.select; without the defer it can
-					-- fire before the swap and fall back to the default (non-snacks) UI.
-					vim.schedule(function()
-						require("persistence").select()
-					end)
+					-- load() restores the session for the current directory and is a
+					-- no-op when there is none (it checks filereadable, with a branchless
+					-- fallback), so a bare `nvim` in an unsaved dir just opens empty.
+					require("persistence").load()
 				end
 			end,
 		})

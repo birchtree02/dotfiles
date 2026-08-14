@@ -35,4 +35,21 @@ for sock in "${TMPDIR:-/tmp}"/nvim.*/*/nvim.*.0; do
 done
 wait
 
+# zsh: signal each registered interactive shell to re-source the palette. Only
+# shells that installed the USR1 trap (see .zshrc) drop a pidfile here, so we
+# never send USR1 — whose default action is terminate — to a shell that can't
+# handle it. Stale pidfiles from crashed shells are pruned as we go.
+pid_dir="$HOME/.local/state/dotfiles/zsh-pids"
+if [ -d "$pid_dir" ]; then
+  for pf in "$pid_dir"/*; do
+    [ -e "$pf" ] || continue
+    pid="${pf##*/}"
+    if kill -0 "$pid" 2>/dev/null; then
+      kill -USR1 "$pid" 2>/dev/null || true
+    else
+      rm -f "$pf"
+    fi
+  done
+fi
+
 echo "Switched to catppuccin-$flavour"

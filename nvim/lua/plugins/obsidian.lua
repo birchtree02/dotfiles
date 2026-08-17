@@ -17,5 +17,8 @@ return {
 				path = workspace_path,
 			},
 		},
+		checkbox = {
+			order = { " ", "x" },
+		},
 	},
 }

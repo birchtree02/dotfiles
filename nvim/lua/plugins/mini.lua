@@ -44,5 +44,26 @@ return {
 				desc = "Autopair, or wrap next word with " .. pair,
 			})
 		end
+
+		local function quoter(pair)
+			local ch = pair:sub(1, 1)
+			return function()
+				local col = vim.fn.col(".")
+				local line = vim.api.nvim_get_current_line()
+				if line:sub(col, col):match("%w") then
+					local n = #(line:sub(col):match("^[%w_]+") or "")
+					return ch .. right:rep(n) .. ch .. left:rep(n + 1)
+				end
+				return pairs.closeopen(pair, "[^\\].")
+			end
+		end
+
+		for _, q in ipairs({ '""', "''", "``" }) do
+			vim.keymap.set("i", q:sub(1, 1), quoter(q), {
+				expr = true,
+				replace_keycodes = false,
+				desc = "Autopair, or wrap next word with " .. q,
+			})
+		end
 	end,
 }

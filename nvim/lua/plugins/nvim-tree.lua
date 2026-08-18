@@ -7,4 +7,15 @@ return {
 	opts = {
 		renderer = { group_empty = true },
 	},
+	config = function(_, opts)
+		require("nvim-tree").setup(opts)
+		vim.api.nvim_create_autocmd("FileType", {
+			pattern = "NvimTree",
+			callback = function()
+				vim.schedule(function()
+					vim.wo.statuscolumn = ""
+				end)
+			end,
+		})
+	end,
 }

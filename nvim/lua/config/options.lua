@@ -19,8 +19,9 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 })
 opt.autowrite = true -- Auto write on change buffer
 opt.completeopt = "menu,menuone,noselect"
-opt.number = true -- shows line numbers
-opt.relativenumber = true -- shows relative line numbers
+opt.number = true
+opt.relativenumber = true
+opt.statuscolumn = "%s%{v:lnum} %=%{v:relnum?v:relnum:v:lnum} "
 opt.tabstop = 2 -- number of spaces tabs count for
 opt.shiftwidth = 2 -- size of an indent
 opt.expandtab = true -- Use spaces instead of tabs
@@ -48,7 +49,7 @@ opt.laststatus = 3 -- Global statusline
 opt.winbar = " %f" -- Show filename at top of each window
 
 vim.api.nvim_create_autocmd("FileType", {
-	pattern = "NvimTree_1",
+	pattern = "NvimTree",
 	callback = function()
 		vim.opt_local.winbar = ""
 	end,

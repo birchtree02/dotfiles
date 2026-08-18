@@ -9,5 +9,8 @@ local function get_flavor()
 	return flavour == "latte" and "latte" or "mocha"
 end
 
-require("catppuccin").setup({ flavour = get_flavor() })
+require("catppuccin").setup({
+	flavour = get_flavor(),
+	transparent_background = true,
+})
 vim.cmd.colorscheme("catppuccin")

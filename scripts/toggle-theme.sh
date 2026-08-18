@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 #
 # toggle-theme.sh — flip between catppuccin mocha and latte, then live-reload
-# tmux and any running nvim instances.
+# kitty, tmux, nvim, claude, and zsh.
 #
 # The flavour is stored in ~/.local/state/dotfiles/theme; apply-state.sh turns
-# that into the generated file tmux sources. kitty is not themed here — see the
-# note further down.
+# that into the generated files each tool sources/includes.
 set -euo pipefail
 
 DOTFILES="$(cd "$(dirname "$0")/.." && pwd)"
@@ -21,9 +20,11 @@ fi
 
 "$DOTFILES/scripts/apply-state.sh" --theme "$flavour" >/dev/null
 
-# kitty is intentionally not reloaded: its colours are pinned in kitty.conf
-# because it won't repaint existing windows without remote control. tmux draws
-# every themed surface (status bar, pane contents, pane borders) itself.
+# kitty: reload config so the padding/border area picks up the new background.
+# This works without remote control — SIGUSR1 triggers a config re-read and
+# kitty repaints the window chrome (background, cursor, borders). Cell colors
+# are handled by tmux.
+kill -SIGUSR1 $(pgrep -x kitty) 2>/dev/null || true
 
 # tmux: reloading tmux.conf re-runs the source-file for the generated theme.
 tmux source-file "$HOME/.config/tmux/tmux.conf" 2>/dev/null || true

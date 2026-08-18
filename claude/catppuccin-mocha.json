@@ -17,6 +17,7 @@
     "diffRemoved": "#3a1e1f",
     "userMessageBackground": "#313244",
     "rate_limit_fill": "#a6e3a1",
-    "rate_limit_empty": "#45475a"
+    "rate_limit_empty": "#45475a",
+    "claudeShimmer": "#94e2d5"
   }
 }

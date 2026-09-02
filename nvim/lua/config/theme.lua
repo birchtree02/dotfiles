@@ -12,5 +12,8 @@ end
 require("catppuccin").setup({
 	flavour = get_flavor(),
 	transparent_background = true,
+	custom_highlights = function(colors)
+		return { LineNr = { fg = colors.overlay1 } }
+	end,
 })
 vim.cmd.colorscheme("catppuccin")

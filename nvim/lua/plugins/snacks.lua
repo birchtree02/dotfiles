@@ -27,6 +27,43 @@ local function get_todos()
 	return items
 end
 
+-- Jump to a file referenced by name under the cursor (e.g. a "foo.yaml" string
+-- literal in Java). The LSP can't resolve string literals to files, so instead
+-- take the filename token under the cursor and search the workspace for it by
+-- basename. A single match opens directly; multiple matches offer a picker.
+local function goto_referenced_file()
+	-- <cfile> respects 'isfname', so it grabs the dotted, underscored token
+	-- under the cursor without the surrounding quotes.
+	local base = vim.fn.expand("<cfile>"):match("([^/\\]+)$")
+	if not base or base == "" then
+		vim.notify("No filename under cursor", vim.log.levels.WARN)
+		return
+	end
+
+	-- rg --files respects .gitignore and is far faster than a Lua tree walk;
+	-- -g '!build' matches the rest of the config. The glob matches the basename
+	-- anywhere in the tree.
+	local out = vim.fn.systemlist({ "rg", "--files", "--color=never", "-g", "!build", "-g", "**/" .. base })
+	if vim.v.shell_error ~= 0 or #out == 0 then
+		vim.notify("No file found matching " .. base, vim.log.levels.WARN)
+		return
+	end
+
+	if #out == 1 then
+		vim.cmd.edit(vim.fn.fnameescape(out[1]))
+		return
+	end
+
+	Snacks.picker.pick({
+		items = vim.tbl_map(function(file)
+			return { file = file, text = file }
+		end, out),
+		format = function(item)
+			return { { item.file } }
+		end,
+	})
+end
+
 return {
 	"folke/snacks.nvim",
 	priority = 1000,
@@ -119,6 +156,11 @@ return {
 				end)
 			end,
 			desc = "Find TODOs (sorted)",
+		},
+		{
+			"gy",
+			goto_referenced_file,
+			desc = "Go to referenced file under cursor",
 		},
 	},
 }

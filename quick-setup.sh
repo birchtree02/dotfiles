@@ -107,6 +107,7 @@ setup_nvim() {
     # The `tree-sitter-cli` formula is the actual binary; plain `tree-sitter` is
     # library-only. The npm/cargo builds don't work on this glibc — use brew.
     ensure_brew tree-sitter-cli
+    ensure_brew ripgrep
     link_into_place "$DOTFILES/nvim" "$HOME/.config/nvim"
 
     echo "  - bootstrapping Lazy.nvim plugins (headless sync)..."
@@ -117,6 +118,7 @@ setup_nvim() {
 setup_tmux() {
     echo "[tmux]"
     ensure_brew tmux
+    ensure_brew lazygit
 
     # Config relies on tmux 3.x features (e.g. terminal-features, OSC 133).
     local tmux_major

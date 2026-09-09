@@ -54,11 +54,14 @@ vim.diagnostic.config({
 	},
 })
 
--- Add borders to LSP hover and signature help
-vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-	border = "rounded",
-})
+-- Add borders to LSP hover and signature help. vim.lsp.with() was removed in
+-- Nvim 0.12; the border is now passed straight to the vim.lsp.buf functions.
+local orig_hover = vim.lsp.buf.hover
+vim.lsp.buf.hover = function(opts)
+	return orig_hover(vim.tbl_extend("force", { border = "rounded" }, opts or {}))
+end
 
-vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
-	border = "rounded",
-})
+local orig_signature_help = vim.lsp.buf.signature_help
+vim.lsp.buf.signature_help = function(opts)
+	return orig_signature_help(vim.tbl_extend("force", { border = "rounded" }, opts or {}))
+end

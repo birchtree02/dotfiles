@@ -41,6 +41,7 @@ require("config.keymaps")
 require("config.lsp")
 require("config.filetypes")
 require("config.autocmds")
+require("config.autosave")
 
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1

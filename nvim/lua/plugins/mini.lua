@@ -11,9 +11,14 @@ return {
 		local pairs = require("mini.pairs")
 		pairs.setup(opts)
 
-		-- When the next character is a letter or digit, an opening bracket wraps
-		-- the following word instead of inserting an empty pair: `|foo` + `(` gives
-		-- `(|foo)`. Any other next char falls back to mini.pairs' normal autopair.
+		-- When there's a WORD ahead, an opening bracket wraps it (up to the next
+		-- whitespace, à la Vim's `W`) instead of inserting an empty pair: `|foo-bar`
+		-- + `(` gives `(|foo-bar)`. With nothing wrappable ahead (whitespace or end
+		-- of line) it falls back to normal autopair.
+		--
+		-- The span stops before a closing bracket so the inserted closer never jumps
+		-- past the closer of a pair we're inside: `(|foo)` + `[` gives `([|foo])`,
+		-- not `([|foo)]`.
 		--
 		-- Both branches return raw termcodes with replace_keycodes = false, matching
 		-- how mini.pairs maps its own expr mappings. <C-g>U before each arrow keeps
@@ -23,13 +28,17 @@ return {
 		end
 		local right, left = tc("<C-g>U<Right>"), tc("<C-g>U<Left>")
 
+		-- Length of the WORD ahead of the cursor, stopping at whitespace or a
+		-- closing bracket. col is 1-based; line:sub(col) is text from the cursor on.
+		local function word_len(col, line)
+			return #(line:sub(col):match("^[^%s)%]}]+") or "")
+		end
+
 		local function opener(pair)
 			local open_ch, close_ch = pair:sub(1, 1), pair:sub(2, 2)
 			return function()
-				local col = vim.fn.col(".")
-				local line = vim.api.nvim_get_current_line()
-				if line:sub(col, col):match("%w") then
-					local n = #(line:sub(col):match("^[%w_]+") or "")
+				local n = word_len(vim.fn.col("."), vim.api.nvim_get_current_line())
+				if n > 0 then
 					return open_ch .. right:rep(n) .. close_ch .. left:rep(n + 1)
 				end
 				-- "^[^\\]" is mini.pairs' default open neighbourhood pattern.
@@ -48,10 +57,8 @@ return {
 		local function quoter(pair)
 			local ch = pair:sub(1, 1)
 			return function()
-				local col = vim.fn.col(".")
-				local line = vim.api.nvim_get_current_line()
-				if line:sub(col, col):match("%w") then
-					local n = #(line:sub(col):match("^[%w_]+") or "")
+				local n = word_len(vim.fn.col("."), vim.api.nvim_get_current_line())
+				if n > 0 then
 					return ch .. right:rep(n) .. ch .. left:rep(n + 1)
 				end
 				return pairs.closeopen(pair, "[^\\].")

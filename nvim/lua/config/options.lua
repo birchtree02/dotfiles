@@ -24,11 +24,10 @@ opt.relativenumber = true
 -- Absolute number left, relative right. On wrapped lines, fill the whole
 -- number area (both columns plus their trailing spaces) with dots.
 function _G.status_column()
-	local w = math.max(#tostring(vim.api.nvim_buf_line_count(0)), 2)
-	if vim.v.virtnum > 0 then
-		return string.rep("·", 2 * w + 1)
-	end
 	local right = vim.v.relnum ~= 0 and vim.v.relnum or vim.v.lnum
+	if vim.v.virtnum > 0 then
+		return string.rep("·", #tostring(vim.v.lnum)) .. " %=" .. string.rep("·", #tostring(right)) .. " "
+	end
 	return vim.v.lnum .. " %=" .. right .. " "
 end
 opt.statuscolumn = "%s%{%v:lua.status_column()%}"

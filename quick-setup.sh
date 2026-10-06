@@ -7,7 +7,7 @@
 #   ./quick-setup.sh zshrc nvim           install specific components
 #   ./quick-setup.sh tmux kitty
 #
-# Components: zshrc, nvim, tmux, kitty
+# Components: zshrc, nvim, tmux, kitty, claude
 #
 # Existing files/symlinks at the target are renamed to <target>.backup-<timestamp>.
 
@@ -18,7 +18,7 @@ TIMESTAMP="$(date +%Y%m%d-%H%M%S)"
 
 usage() {
     cat <<EOF
-Usage: $(basename "$0") [--all] [zshrc] [nvim] [tmux] [kitty]
+Usage: $(basename "$0") [--all] [zshrc] [nvim] [tmux] [kitty] [claude]
 
 Symlinks selected dotfiles components into place. Existing files are backed
 up to <target>.backup-${TIMESTAMP} before being replaced.
@@ -33,6 +33,7 @@ DO_ZSHRC=0
 DO_NVIM=0
 DO_TMUX=0
 DO_KITTY=0
+DO_CLAUDE=0
 
 [[ $# -eq 0 ]] && usage
 
@@ -54,11 +55,12 @@ ensure_brew() {
 
 for arg in "$@"; do
     case "$arg" in
-        --all)   DO_ZSHRC=1; DO_NVIM=1; DO_TMUX=1; DO_KITTY=1 ;;
+        --all)   DO_ZSHRC=1; DO_NVIM=1; DO_TMUX=1; DO_KITTY=1; DO_CLAUDE=1 ;;
         zshrc)   DO_ZSHRC=1 ;;
         nvim)    DO_NVIM=1 ;;
         tmux)    DO_TMUX=1 ;;
         kitty)   DO_KITTY=1 ;;
+        claude)  DO_CLAUDE=1 ;;
         -h|--help) usage ;;
         *) echo "Unknown argument: $arg" >&2; usage ;;
     esac
@@ -150,6 +152,21 @@ setup_kitty() {
     link_into_place "$DOTFILES/kitty" "$HOME/.config/kitty"
 }
 
+setup_claude() {
+    echo "[claude]"
+    ensure_brew jq
+    link_into_place "$DOTFILES/claude/statusline-command.sh" "$HOME/.claude/statusline-command.sh"
+
+    # Point settings.json at the status line, keeping every other setting.
+    local settings="$HOME/.claude/settings.json"
+    [[ -f "$settings" ]] || echo '{}' > "$settings"
+    local tmp
+    tmp="$(mktemp)"
+    jq '.statusLine = {type: "command", command: "sh $HOME/.claude/statusline-command.sh"}' \
+        "$settings" > "$tmp" && mv "$tmp" "$settings"
+    echo "  ✓ statusLine set in $settings"
+}
+
 # Machine-local state (theme flavour, kitty padding). kitty.conf and tmux.conf
 # include generated files from the state dir, so these must exist before either
 # starts cleanly. Existing state is preserved — this only fills in defaults.
@@ -168,6 +185,7 @@ echo
 (( DO_NVIM ))  && setup_nvim
 (( DO_TMUX ))  && setup_tmux
 (( DO_KITTY )) && setup_kitty
+(( DO_CLAUDE )) && setup_claude
 # After the symlinks: the generated files reference ~/.config/{kitty,tmux}.
 (( DO_TMUX || DO_KITTY || DO_NVIM )) && setup_state
 
